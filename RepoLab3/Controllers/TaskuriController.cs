@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RepoLab3.Models;
 using RepoLab3.Models.DataContext;
+using RepoLab3.Services;
+using RepoLab3.ViewModels;
 
 namespace RepoLab3.Controllers
 {
@@ -14,31 +16,17 @@ namespace RepoLab3.Controllers
     [ApiController]
     public class TaskuriController : ControllerBase
     {
-        private TaskuriDbContext context;
-        public TaskuriController(TaskuriDbContext context)
+        private ITaskService taskService;
+        public TaskuriController(ITaskService taskService)
         {
-            this.context = context;
+            this.taskService = taskService;
         }
 
         // GET: api/Tasks
         [HttpGet]
-        public IEnumerable<Taskul> Get([FromQuery]DateTime? from, [FromQuery]DateTime? to)
+        public IEnumerable<TaskGetModel> Get([FromQuery]DateTime? from, [FromQuery]DateTime? to)
         {
-            IQueryable<Taskul> result = context.Taskuri.Include(c => c.Comments);
-            if (from == null && to == null)
-            {
-                return result;
-            }
-            if (from != null)
-            {
-                result = result.Where(p => p.Deadline >= from);
-            }
-            if (to != null)
-            {
-                result = result.Where(p => p.Deadline <= to);
-            }
-            return result;
-
+            return taskService.GetAll(from, to);
         }
 
         // GET: api/Tasks/5
@@ -47,28 +35,26 @@ namespace RepoLab3.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult Get(int id)
         {
-            var existing = context.Taskuri
-                .Include(c => c.Comments)
-                .FirstOrDefault(t => t.Id == id);
-            if (existing == null)
+            var found = taskService.GetById(id);
+            if (found == null)
             {
                 return NotFound();
             }
-
-            return Ok(existing);
+            return Ok(found);
         }
 
+        /// <summary>
+        /// Post Method
+        /// </summary>
+        /// 
+        /// <param name="task"></param>
         //POST: api/Tasks
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost]
-        public void Post([FromBody] Taskul task)
+        public void Post([FromBody] TaskPostModel task)
         {
-            if (ModelState.IsValid)
-            {
-                context.Taskuri.Add(task);
-                context.SaveChanges();
-            }
+            taskService.Create(task);
         }
 
         // PUT: api/Tasks/5
@@ -77,26 +63,9 @@ namespace RepoLab3.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult Put(int id, [FromBody] Taskul task)
         {
-            var exists = context.Taskuri.AsNoTracking().FirstOrDefault(t => t.Id == id);
-            if (exists == null)
-            {
-                context.Taskuri.Add(task);
-                context.SaveChanges();
-                return Ok(task);
-            }
 
-            if (task.StatusId.Equals(3))
-            {
-                DateTime localDate = DateTime.Now;
-                task.ClosedAt = localDate;
-            }
-            else
-            {
-                task.ClosedAt = DateTime.MaxValue;
-            }
-
-            context.Taskuri.Update(task);
-            context.SaveChanges();
+            var result = taskService.Upsert(id, task);
+            
             return Ok(task);
         }
 
@@ -106,14 +75,12 @@ namespace RepoLab3.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult Delete(int id)
         {
-            var exists = context.Taskuri.AsNoTracking().FirstOrDefault(t => t.Id == id);
-            if (exists == null)
+            var result = taskService.Delete(id);
+            if (result == null)
             {
                 return NotFound();
             }
-            context.Taskuri.Remove(exists);
-            context.SaveChanges();
-            return Ok();
+            return Ok(result);
         }
     }
 }
