@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using curs_2_webapi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -65,6 +66,7 @@ namespace RepoLab3
             // https://stackoverflow.com/questions/38138100/addtransient-addscoped-and-addsingleton-services-differences
             // Dependency Injection
             services.AddScoped<ITaskService, TaskService>();
+            services.AddScoped<ICommentService, CommentService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

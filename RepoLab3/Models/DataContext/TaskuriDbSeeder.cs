@@ -16,36 +16,7 @@ namespace RepoLab3.Models.DataContext
             {
                 return;   // DB has been seeded
             }
-            context.Statuses.AddRange(
-                new Status
-                {
-                    Name = "Open",
-                },
-                new Status
-                {
-                    Name = "In Progress",
-                },
-                new Status
-                {
-                    Name = "Closed"
-                });
-            context.SaveChanges();
-
-            context.TasksImportance.AddRange(
-                new TaskImportance
-                {
-                    Name = "Low"
-                },
-                new TaskImportance
-                {
-                    Name = "Medium"
-                },
-                new TaskImportance
-                {
-                    Name = "High"
-                });
-            context.SaveChanges();
-
+            
             context.Taskuri.AddRange(
                 new Taskul
                 {
@@ -53,9 +24,7 @@ namespace RepoLab3.Models.DataContext
                     Description = "update",
                     DateAdded = new DateTime(2019, 09, 12, 12, 34, 00),
                     Deadline = new DateTime(2019, 12, 22, 11, 21, 22),
-                    ClosedAt = DateTime.MaxValue,
-                    TaskImportanceId = 1,
-                    StatusId = 1,
+                    ClosedAt = null
                 },
                 new Taskul
                 {
@@ -63,9 +32,7 @@ namespace RepoLab3.Models.DataContext
                     Description = "anything",
                     DateAdded = new DateTime(2018, 07, 22, 21, 44, 00),
                     Deadline = new DateTime(2019, 12, 22, 22, 21, 22),
-                    ClosedAt = DateTime.MaxValue,
-                    TaskImportanceId = 3,
-                    StatusId = 2,
+                    ClosedAt = null
                 }
             );
             context.SaveChanges(); // commit transaction

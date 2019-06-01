@@ -84,14 +84,14 @@ namespace RepoLab3.Services
                 context.SaveChanges();
                 return task;
             }
-            if (task.StatusId.Equals(3))
+            if (task.Status.ToString() == "Closed")
             {
                 DateTime localDate = DateTime.Now;
                 task.ClosedAt = localDate;
             }
             else
             {
-                task.ClosedAt = DateTime.MaxValue;
+                task.ClosedAt = null;
             }
             task.Id = id;
             context.Taskuri.Update(task);

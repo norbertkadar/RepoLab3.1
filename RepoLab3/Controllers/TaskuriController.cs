@@ -46,7 +46,24 @@ namespace RepoLab3.Controllers
         /// <summary>
         /// Post Method
         /// </summary>
-        /// 
+        /// Sample request:
+        ///
+        ///     POST /taskuri
+        /// <remarks>
+        /// {
+        ///     "title": "do something",
+        ///     "description": "anything",
+        ///     "dateAdded": "2018-07-22T21:44:00",
+        ///     "deadline": "2019-12-22T22:21:22",
+        ///     "closedAt": null,
+        ///     "status": 2,
+        ///     "taskImportance": 1,
+        ///     "comments": [{
+        ///        		        "text": "Done to this",
+        ///    			        "important": true
+        ///                 }]
+        ///  }
+        /// </remarks> 
         /// <param name="task"></param>
         //POST: api/Tasks
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -57,6 +74,30 @@ namespace RepoLab3.Controllers
             taskService.Create(task);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     PuT /taskuri/id
+        /// {
+        ///     "title": "do something",
+        ///     "description": "anything",
+        ///     "dateAdded": "2018-07-22T21:44:00",
+        ///     "deadline": "2019-12-22T22:21:22",
+        ///     "closedAt": null,
+        ///     "status": 2,
+        ///     "taskImportance": 1,
+        ///     "comments": [{
+        ///        		        "text": "Done to this",
+        ///    			        "important": true
+        ///                 }]
+        ///  }
+        /// </remarks>
+        /// <param name="id"></param>
+        /// <param name="task"></param>
+        /// <returns></returns>
         // PUT: api/Tasks/5
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
